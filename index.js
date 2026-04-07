@@ -5,6 +5,12 @@ import 'dotenv/config';
 const app = e();
 
 //database
+const mongoUrl = process.env.mongoUrl;
+mongoose.connect(mongoUrl).then(() => {
+    console.log("Database connected sucessfully 🍫🕯️");
+}).catch((err) => {
+    console.log(err);
+});
 
 const port = process.env.port || 3000;
 
