@@ -2,7 +2,11 @@ import e from "express";
 import mongoose from "mongoose";
 import 'dotenv/config';
 
+//routers
+import studentRouter from "./routes/studentRouter.js";
+
 const app = e();
+app.use(e.json());
 
 //database
 const mongoUrl = process.env.mongoUrl;
@@ -11,6 +15,11 @@ mongoose.connect(mongoUrl).then(() => {
 }).catch((err) => {
     console.log(err);
 });
+
+//routes
+app.use("/api/student", studentRouter);
+
+
 
 const port = process.env.port || 3000;
 

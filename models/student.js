@@ -16,7 +16,7 @@ const studentSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: false
     },
     createdAt: {
         type: Date,
@@ -24,5 +24,5 @@ const studentSchema = new mongoose.Schema({
     }
 })
 
-const Srudent = mongoose.model("Student", studentSchema);
-export default Srudent
+const Student = mongoose.model("Student", studentSchema);
+export default Student
