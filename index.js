@@ -1,6 +1,6 @@
 import e from "express";
 import mongoose from "mongoose";
-require('dotenv').config();
+import 'dotenv/config';
 
 const app = e();
 
@@ -9,6 +9,6 @@ const app = e();
 const port = process.env.port || 3000;
 
 
-app.listen(3000, ()=>{
+app.listen(port, ()=>{
     console.log("App is running on port 3000 ❤️")
 })
