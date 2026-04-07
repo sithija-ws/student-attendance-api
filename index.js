@@ -5,9 +5,13 @@ import 'dotenv/config';
 //routers
 import studentRouter from "./routes/studentRouter.js";
 
+import cors from "cors";
+
+
+
 const app = e();
 app.use(e.json());
-
+app.use(cors());
 //database
 const mongoUrl = process.env.mongoUrl;
 mongoose.connect(mongoUrl).then(() => {
@@ -21,7 +25,7 @@ app.use("/api/student", studentRouter);
 
 
 
-const port = process.env.port || 3000;
+const port = process.env.port ;
 
 
 app.listen(port, ()=>{
