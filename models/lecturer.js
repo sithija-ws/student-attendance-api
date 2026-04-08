@@ -13,14 +13,14 @@ const lecturerSchema = mongoose.Schema({
         validate: {
         validator: validator.isEmail,
         message: props => `${props.value} is not a valid email!`
-    },
+    }},
     password: {
         type: String,
         required: true
     }
 
-    }
+    
 })
 
-const Lecturer = mongoose.Model("Lecturer", lecturerSchema);
+const Lecturer = mongoose.model("Lecturer", lecturerSchema);
 export default Lecturer;

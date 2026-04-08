@@ -1,5 +1,5 @@
 import { data } from "react-router-dom";
-import Lecturer from "../models/lecturer";
+import Lecturer from "../models/lecturer.js";
 import bcrypt from "bcrypt";
 
 export const lecturerRegister = async (req,res)=>{
