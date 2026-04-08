@@ -122,3 +122,49 @@ export const generateOtp = async (req,res)=>{
         })
     }
 }
+
+export const changePassword = async (req,res)=>{
+    try {
+        const {email, newPassword, confirmPassword ,otp} = req.body;
+
+        if(newPassword!==confirmPassword){
+            return res.status(400).json({
+                message: "password don't match"
+            })
+        }
+
+        //check student exists
+        let student = await Student.findOne({email});
+        if(!student){
+            return res.status(404).json({
+                message: "Student not Found!"
+            })
+        }
+
+        // Check OTP
+        if (String(student.otp) !== String(otp) || student.otpExpire < Date.now()) {
+            return res.status(400).json({ 
+                message: "Invalid or expired OTP" 
+            });
+        }
+
+        //hash pswd
+        const hashedPswd = await bcrypt.hash(newPassword, 10);
+        student.password = hashedPswd;
+
+        //clear otp
+        student.otp = null;
+        student.otpExpire = null;
+
+        await student.save()
+
+        res.status(200).json({ message: "Password updated successfully" });
+
+
+    } catch (error) {
+        console.error("ERROR:", error); // 🔥 
+        res.status(500).json({
+            "message": "internal server error 💥"
+        })
+    }
+}
