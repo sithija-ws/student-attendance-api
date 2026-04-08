@@ -1,10 +1,10 @@
 import e from "express";
-import { studentRegister } from "../controllers/studentController.js";
+import { studentRegister, studentRegisterFromCSV } from "../controllers/studentController.js";
 
 const studentRouter = e.Router();
 
 
 studentRouter.post("/register/manual", studentRegister);
-
+studentRouter.post("/register/bulk", studentRegisterFromCSV);
 
 export default studentRouter;
