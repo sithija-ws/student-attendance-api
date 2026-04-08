@@ -116,6 +116,7 @@ export const generateOtp = async (req,res)=>{
         res.status(200).json({ message: "OTP sent to email" });
 
     } catch (error) {
+        console.error("OTP ERROR:", error); // 🔥 
         res.status(500).json({
             "message": "internal server error 💥"
         })
