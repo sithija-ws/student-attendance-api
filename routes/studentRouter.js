@@ -6,4 +6,5 @@ const studentRouter = e.Router();
 
 studentRouter.post("/register/manual", studentRegister);
 
+
 export default studentRouter;

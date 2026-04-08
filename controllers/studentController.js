@@ -38,3 +38,39 @@ export const studentRegister = async (req, res) => {
     }
     
 }
+
+export const studentRegisterFromCSV = async (req,res)=>{
+    try {
+        const {email, studentID, name } = req.body;
+
+        //Basic validation
+        if (!name || !studentID || !email) {
+        return res.status(400).json({ message: "All fields required" });
+        }
+
+        // Check duplicate
+        const existingStudent = await Student.findOne({
+        $or: [{ studentID }, { email }],
+        });
+
+        if (existingStudent) {
+        return res.status(409).json({ message: "Student already exists" });
+        }
+
+        const newStudent = new Student({
+            name, studentID, email
+        })
+
+        await newStudent.save();
+
+        return res.status(201).json({
+            message: "Student registered successfully",
+            student: newStudent,
+        })
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Server error" });
+    }
+    
+}
