@@ -1,5 +1,7 @@
 import Student from "../models/student.js";
 import bcrypt from "bcrypt"
+import nodemailer from "nodemailer";
+import 'dotenv/config';
 
 //Student Manual Register
 export const studentRegister = async (req, res) => {
@@ -73,4 +75,49 @@ export const studentRegisterFromCSV = async (req,res)=>{
         return res.status(500).json({ message: "Server error" });
     }
     
+}
+
+export const generateOtp = async (req,res)=>{
+    try {
+        //check is student registered
+        const {email} = req.body;
+        const student = await Student.findOne({email});
+        if(!student){
+            return res.status(404).json({
+                message: "Student not Found!"
+            })
+        }
+
+        //generate 6 digit OTP
+         const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Expire in 5 minutes
+        student.otp = otp;
+        student.otpExpire = Date.now() + 5 * 60 * 1000;
+
+        await student.save();
+
+        // Send email
+        const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: "sithija.ws@gmail.com",
+            pass: process.env.pswd,
+        },
+        });
+
+        await transporter.sendMail({
+        from: "sithija.ws@gmail.com",
+        to: email,
+        subject: "OTP for Password Reset",
+        text: `Your OTP is: ${otp}`,
+        });
+
+        res.status(200).json({ message: "OTP sent to email" });
+
+    } catch (error) {
+        res.status(500).json({
+            "message": "internal server error 💥"
+        })
+    }
 }
