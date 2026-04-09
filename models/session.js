@@ -5,6 +5,11 @@ const sessionSchema = new mongoose.Schema({
         type: Date,
         required: true  
     },
+    lecturer: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Lecturer', 
+        required: true
+    },
     institute: {
         type: String,
         required: true      
@@ -20,7 +25,6 @@ const sessionSchema = new mongoose.Schema({
     sessionMode : {
         type: String,
         required: true,
-        enum : ["physical", "online"]
     },
     startTime: {
         type: String,
@@ -31,9 +35,11 @@ const sessionSchema = new mongoose.Schema({
         required: true
     },
     location: {
-        type: String,
-        required: true
-    }
+        lat: { type: Number, required: true },
+        lng: { type: Number, required: true }
+    },
+    otp: { type: String },
+    otpExpire: { type: Date }
 });
 
 const Session = mongoose.model("Session", sessionSchema);
