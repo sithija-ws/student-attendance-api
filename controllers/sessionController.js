@@ -15,11 +15,14 @@ export const createSession = async (req, res) => {
             sessionMode, 
             startTime, 
             endTime, 
-            location 
+            location,
+            expiryMinutes
         } = req.body;
 
+        //otp setup
         const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-        const expirationDate = new Date(Date.now() + 5 * 60 * 1000);
+        const minutesToAdd = expiryMinutes ? Number(expiryMinutes) : 5;
+        const expirationDate = new Date(Date.now() + minutesToAdd * 60 * 1000);
 
         const newSession = new Session({
             date,
