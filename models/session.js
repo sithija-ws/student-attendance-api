@@ -39,7 +39,12 @@ const sessionSchema = new mongoose.Schema({
         lng: { type: Number, required: true }
     },
     otp: { type: String },
-    otpExpire: { type: Date }
+    otpExpire: { type: Date },
+
+    attendees: [{
+        student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
+        timestamp: { type: Date, default: Date.now }
+    }]
 });
 
 const Session = mongoose.model("Session", sessionSchema);
