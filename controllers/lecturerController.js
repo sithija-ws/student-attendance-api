@@ -1,4 +1,3 @@
-import { data } from "react-router-dom";
 import Lecturer from "../models/lecturer.js";
 import bcrypt from "bcrypt";
 
