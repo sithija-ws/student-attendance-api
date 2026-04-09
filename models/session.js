@@ -8,7 +8,7 @@ const sessionSchema = new mongoose.Schema({
     lecturer: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Lecturer', 
-        required: true
+        
     },
     institute: {
         type: String,

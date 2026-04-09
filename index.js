@@ -7,6 +7,7 @@ import studentRouter from "./routes/studentRouter.js";
 import lecturerRouter from "./routes/lecturerRouter.js";
 import userLoginRouter from "./routes/userLoginRouter.js";
 import cors from "cors";
+import sessionRouter from "./routes/sessionRouter.js";
 
 
 
@@ -26,6 +27,7 @@ mongoose.connect(mongoUrl).then(() => {
 app.use("/api/student", studentRouter);
 app.use("/api/lecturer", lecturerRouter);
 app.use("/api/login", userLoginRouter);
+app.use("/api/sessions", sessionRouter);
 
 
 

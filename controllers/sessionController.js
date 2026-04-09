@@ -2,6 +2,7 @@ import Session from "../models/session.js";
 
 export const createSession = async (req, res) => {
     try {
+        console.log("REQ.USER:", req.user); // <--- Add this
         const user = req.user;
         if(user.role !== "lecturer"){
             return res.status(403).json({message: "You're not allowed to do this operation!"});
@@ -32,8 +33,10 @@ export const createSession = async (req, res) => {
             sessionMode : sessionMode.toLowerCase(),
             startTime, 
             endTime, 
-            location: `Lat: ${location.lat}, Lng: ${location.lng}`,
-            lecturer: user.id, // ID from the decoded JWT
+            location: {lat: location.lat,
+                lng: location.lng
+            },
+            lecturer: req.user.id || req.user._id, // ID from the decoded JWT
             otp: generatedOtp,
             otpExpire: expirationDate
         });
@@ -42,6 +45,8 @@ export const createSession = async (req, res) => {
         res.status(201).json(newSession);
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({message: "something went wrong"});
+        res.status(500).json({
+            message: "Backend Error", 
+        error: error.message});
     }
 }
