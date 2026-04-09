@@ -45,3 +45,6 @@ export const loginUser = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+/* temp user: sithijahimantha000@gmail.com, 123 */
+/* temp user: hirushi@gmail.com, 123 */
