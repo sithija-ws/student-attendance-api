@@ -72,7 +72,7 @@ export const createSession = async (req, res) => {
 
 export const markAttendance = async (req,res) =>{
     try {
-        const {otp} = req.body;
+        const {otp, location} = req.body;
         const studentID = req.user.id || req.user._id;
         
         const session = await Session.findOne({otp:otp});
@@ -84,6 +84,33 @@ export const markAttendance = async (req,res) =>{
         if(new Date() > session.otpExpire){
             return res.status(400).json({message: "OTP Expired! ❌"});
         }
+
+
+        //Conditional Location Check
+        if (session.sessionMode === "physical") {
+            if (!location || !location.lat || !location.lng) {
+                return res.status(400).json({ message: "Location access required for Physical sessions! 📍" });
+            }
+
+            const distance = getDistance(
+                session.location.lat, 
+                session.location.lng, 
+                location.lat, 
+                location.lng
+            );
+
+            const MAX_DISTANCE = 50; // Allowed radius in meters (adjust as needed)
+
+            if (distance > MAX_DISTANCE) {
+                return res.status(403).json({ 
+                    message: `You are too far from the lecture hall (${Math.round(distance)}m away) 🚶‍♂️` 
+                });
+            }
+        }
+
+
+
+
 
         //compare session.location with student's req.body.location;
         const updatedSession = await Session.findOneAndUpdate(
