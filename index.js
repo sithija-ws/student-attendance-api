@@ -5,8 +5,9 @@ import 'dotenv/config';
 //routers
 import studentRouter from "./routes/studentRouter.js";
 import lecturerRouter from "./routes/lecturerRouter.js";
-
+import userLoginRouter from "./routes/userLoginRouter.js";
 import cors from "cors";
+
 
 
 
@@ -24,7 +25,7 @@ mongoose.connect(mongoUrl).then(() => {
 //routes
 app.use("/api/student", studentRouter);
 app.use("/api/lecturer", lecturerRouter);
-app.use("/api/login", )
+app.use("/api/login", userLoginRouter);
 
 
 
