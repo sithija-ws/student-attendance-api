@@ -24,6 +24,7 @@ mongoose.connect(mongoUrl).then(() => {
 //routes
 app.use("/api/student", studentRouter);
 app.use("/api/lecturer", lecturerRouter);
+app.use("/api/login", )
 
 
 
