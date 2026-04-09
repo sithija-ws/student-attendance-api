@@ -29,18 +29,19 @@ export const createSession = async (req, res) => {
             institute,
             subject,
             lessonName,
-            sessionMode,
+            sessionMode : sessionMode.toLowerCase(),
             startTime, 
             endTime, 
-            location,
+            location: `Lat: ${location.lat}, Lng: ${location.lng}`,
             lecturer: user.id, // ID from the decoded JWT
             otp: generatedOtp,
             otpExpire: expirationDate
         });
 
         await newSession.save();
-        res.status(201).json(generatedOtp);
+        res.status(201).json(newSession);
     } catch (error) {
+        console.log(error.message);
         res.status(500).json({message: "something went wrong"});
     }
 }
