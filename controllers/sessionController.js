@@ -1,23 +1,7 @@
-import { compare } from "bcrypt";
 import Session from "../models/session.js";
+import { getDistance } from 'geolib';
 
 
-
-// Helper to calculate distance in meters
-const getDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371e3; // Earth's radius in meters
-    const φ1 = lat1 * Math.PI / 180;
-    const φ2 = lat2 * Math.PI / 180;
-    const Δφ = (lat2 - lat1) * Math.PI / 180;
-    const Δλ = (lon2 - lon1) * Math.PI / 180;
-
-    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-              Math.cos(φ1) * Math.cos(φ2) *
-              Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    return R * c; // Distance in meters
-};
 
 export const createSession = async (req, res) => {
     try {
@@ -49,7 +33,7 @@ export const createSession = async (req, res) => {
             institute,
             subject,
             lessonName,
-            sessionMode : sessionMode.toLowerCase(),
+            sessionMode,
             startTime, 
             endTime, 
             location: {lat: location.lat,
@@ -70,70 +54,77 @@ export const createSession = async (req, res) => {
     }
 }
 
-export const markAttendance = async (req,res) =>{
+// 1. Check session details (First fetch in your frontend)
+export const checkSession = async (req, res) => {
     try {
-        const {otp, location} = req.body;
-        const studentID = req.user.id || req.user._id;
-        
-        const session = await Session.findOne({otp:otp});
+        const { otp } = req.params;
 
-        if(!session){
-            return res.status(404).json({message: "Invalid OTP! ❌"});
+        // Find by OTP only
+        const session = await Session.findOne({ otp });
+
+        if (!session) {
+            return res.status(404).json({ message: "Invalid OTP code." });
         }
 
-        if(new Date() > session.otpExpire){
-            return res.status(400).json({message: "OTP Expired! ❌"});
+        // Return sessionMode
+        res.status(200).json({ sessionMode: session.sessionMode }); 
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+// 2. Mark Attendance (Second fetch in your frontend)
+export const markAttendance = async (req, res) => {
+    // 1. Pull studentId from req.body (or req.user.id if using JWT)
+    const { otp, location, studentId } = req.body;
+
+    try {
+        const session = await Session.findOne({ otp });
+
+        if (!session) {
+            return res.status(404).json({ message: "Session not found." });
         }
 
+        // Check Expiry
+        if (new Date() > session.otpExpire) {
+            return res.status(400).json({ message: "This lecture session has expired." });
+        }
 
-        //Conditional Location Check
-        if (session.sessionMode === "physical") {
+        // Geolocation Check
+        if (session.sessionMode === 'Physical') {
             if (!location || !location.lat || !location.lng) {
-                return res.status(400).json({ message: "Location access required for Physical sessions! 📍" });
+                return res.status(400).json({ message: "Location is required for this session." });
             }
 
             const distance = getDistance(
-                session.location.lat, 
-                session.location.lng, 
-                location.lat, 
-                location.lng
+                { latitude: session.location.lat, longitude: session.location.lng },
+                { latitude: location.lat, longitude: location.lng }
             );
 
-            const MAX_DISTANCE = 50; // Allowed radius in meters (adjust as needed)
+            console.log(`Distance calculated: ${distance} meters`);
 
-            if (distance > MAX_DISTANCE) {
-                return res.status(403).json({ 
-                    message: `You are too far from the lecture hall (${Math.round(distance)}m away) 🚶‍♂️` 
-                });
+            if (distance > 30) { 
+                return res.status(403).json({ message: `Too far! You are ${distance}m away.` });
             }
         }
 
-
-
-
-
-        //compare session.location with student's req.body.location;
-        const updatedSession = await Session.findOneAndUpdate(
-            { _id: session._id, "attendees.student": { $ne: studentId } },
-            { 
-                $push: { 
-                    attendees: { student: studentId, timestamp: new Date() } 
-                } 
-            },
-            { new: true }
+        // Duplicate Check
+        const alreadyMarked = session.attendedStudents.some(
+            (id) => id?.toString() === studentId?.toString()
         );
 
-        if (!updatedSession) {
-            return res.status(400).json({ message: "Attendance already marked! ✅" });
+        if (alreadyMarked) {
+            return res.status(400).json({ message: "You have already marked your attendance." });
         }
 
+        // Push the  ID
+        session.attendedStudents.push(studentId);
+        await session.save();
 
-        res.status(200).json({ message: "Attendance marked successfully! 🎉" });
+        res.status(200).json({ message: "Attendance marked successfully! ✅" });
 
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({
-            message: "Server error during attendance", 
-            error: error.message});
+        console.error("Attendance Error:", error.message);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
-}
+};

@@ -41,9 +41,9 @@ const sessionSchema = new mongoose.Schema({
     otp: { type: String },
     otpExpire: { type: Date },
 
-    attendees: [{
-        student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
-        timestamp: { type: Date, default: Date.now }
+    attendedStudents: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student'
     }]
 });
 
