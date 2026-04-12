@@ -206,7 +206,7 @@ export const getAttendanceReport = async (req,res) =>{
 
         // Find session and populate student details
         const session = await Session.findOne({ _id: id, lecturer: user.id })
-            .populate('attendedStudents', 'name studentID email'); // Only get necessary fields
+            .populate('attendedStudents', 'name studentID email institution'); // Only get necessary fields
 
         if (!session) {
             return res.status(404).json({ message: "Session not found or unauthorized" });

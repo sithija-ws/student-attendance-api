@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import validator from "validator"
 
 const studentSchema = new mongoose.Schema({
     name: {
@@ -12,7 +13,13 @@ const studentSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        lowercase: true,
+        trim: true,
+        validate: {
+        validator: validator.isEmail,
+        message: props => `${props.value} is not a valid email!`
+    }
     },
     password: {
         type: String,
@@ -30,7 +37,7 @@ const studentSchema = new mongoose.Schema({
         type: Date,
         required: false
     },
-    institute: {
+    institution: {
         type: String,
         required: true
     }

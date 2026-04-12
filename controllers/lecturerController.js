@@ -1,6 +1,7 @@
 import Lecturer from "../models/lecturer.js";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
+import Student from "../models/student.js";
 
 export const lecturerRegister = async (req,res)=>{
     try {

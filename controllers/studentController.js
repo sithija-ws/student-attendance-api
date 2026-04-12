@@ -32,7 +32,7 @@ export const studentRegister = async (req, res) => {
             student
         })
     }catch(error){
-        console.log(err.message);
+        console.log(error.message);
         res.status(500).json({
             message: "internal server error!"
         })
@@ -43,10 +43,10 @@ export const studentRegister = async (req, res) => {
 
 export const studentRegisterFromCSV = async (req,res)=>{
     try {
-        const {email, studentID, name, institute } = req.body;
+        const {email, studentID, name, institution } = req.body;
 
         //Basic validation
-        if (!name || !studentID || !email || !institute) {
+        if (!name || !studentID || !email || !institution) {
         return res.status(400).json({ message: "All fields required" });
         }
 
@@ -60,7 +60,7 @@ export const studentRegisterFromCSV = async (req,res)=>{
         }
 
         const newStudent = new Student({
-            name, studentID, email, institute
+            name, studentID, email, institution
         })
 
         await newStudent.save();
@@ -168,3 +168,49 @@ export const changePassword = async (req,res)=>{
         })
     }
 }
+
+
+export const getStudentsByInstitution = async (req,res)=>{
+    try {
+        const { institution } = req.query;
+
+        if (!institution) {
+            return res.status(400).json({ message: "Institution is required" });
+        }
+
+        // Fetching students matching the institution
+        const students = await Student.find({ institution });
+
+        return res.status(200).json(students);
+    } catch (error) {
+        console.error("Fetch Students Error:", error.message);
+        res.status(500).json({ message: "internal server error! 💥" });
+    }
+}
+
+
+export const manageStudentAction = async (req, res) => {
+    try {
+        const { studentID, action, institution } = req.body;
+
+        if (action === "remove") {
+            // Find and delete the student
+            const deletedStudent = await Student.findOneAndDelete({ 
+                studentID, 
+                institution 
+            });
+
+            if (!deletedStudent) {
+                return res.status(404).json({ message: "Student not found in this institution" });
+            }
+
+            console.log(`Student ${studentID} removed successfully ✅`);
+            return res.status(200).json({ message: "Student removed successfully ✅" });
+        }
+
+        return res.status(400).json({ message: "Invalid action" });
+    } catch (error) {
+        console.error("Manage Student Error:", error.message);
+        res.status(500).json({ message: "internal server error! 💥" });
+    }
+};

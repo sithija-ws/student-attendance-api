@@ -10,6 +10,8 @@ const lecturerSchema = mongoose.Schema({
         type: String,
         required: true,
         unique: true,
+        lowercase: true,
+        trim: true,
         validate: {
         validator: validator.isEmail,
         message: props => `${props.value} is not a valid email!`
