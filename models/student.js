@@ -40,6 +40,7 @@ export default Student
 robert@yahoo.com
 Donald@yahoo.com
 sirisena@yahoo.com
+sithijax2@gmail.com
 123
 
 

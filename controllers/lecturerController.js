@@ -20,6 +20,14 @@ export const lecturerRegister = async (req,res)=>{
             })
         } 
 
+        //check is a student email
+        let isStudent = await Student.findOne({email});
+        if(isStudent){
+            return res.status(400).json({
+                message: "Students not allowed to sign up as lecturers 🚫"
+            })
+        }
+
         const hashedPassword = await bcrypt.hash(password,10);
 
         let lecturer = new Lecturer({
