@@ -187,3 +187,43 @@ export const deleteSession = async (req,res) =>{
         })
     }
 }
+
+export const getAttendanceReport = async (req,res) =>{
+    try {
+        const user = req.user;
+        const { id } = req.params;
+        
+        //isLogin check
+        if(!user){
+            return res.status(401).json({message: "Please Login and continue!"});
+        }
+
+        //isLecturer check
+        if(user.role !== "lecturer"){
+            return res.status(403).json({message: "You're not allowed to do this operation!"});
+        }
+
+        // Find session and populate student details
+        const session = await Session.findOne({ _id: id, lecturer: user.id })
+            .populate('attendedStudents', 'name studentID email'); // Only get necessary fields
+
+        if (!session) {
+            return res.status(404).json({ message: "Session not found or unauthorized" });
+        }
+
+        // Send the data back
+        res.status(200).json({
+            sessionInfo: {
+                subject: session.subject,
+                date: session.date
+            },
+            students: session.attendedStudents
+        });
+        
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({
+            message: error.message
+        });
+    }
+}
