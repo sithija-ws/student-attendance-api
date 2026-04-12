@@ -1,5 +1,6 @@
 import Lecturer from "../models/lecturer.js";
 import bcrypt from "bcrypt";
+import nodemailer from "nodemailer";
 
 export const lecturerRegister = async (req,res)=>{
     try {
@@ -113,6 +114,7 @@ export const changePassword = async (req,res)=>{
 
         //check otp
         if(String(lecturer.otp) !== String(otp) || lecturer.otpExpire < Date.now()){
+
             return res.status(400).json({
                 message: "Invalid or expired OTP"
             })

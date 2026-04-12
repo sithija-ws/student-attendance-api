@@ -17,6 +17,14 @@ const lecturerSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    otp: {
+        type: String,
+        required: false
+    },
+    otpExpire: {
+        type: Date,
+        required: false
     }
 
     

@@ -31,7 +31,7 @@ export const studentRegister = async (req, res) => {
             message: "student registered successfully ✅",
             student
         })
-    }catch{
+    }catch(error){
         console.log(err.message);
         res.status(500).json({
             message: "internal server error!"
