@@ -155,3 +155,35 @@ export const sessionList = async (req,res)=>{
         })
     }
 }
+
+export const deleteSession = async (req,res) =>{
+    try {
+        const user = req.user;
+        
+        //isLogin check
+        if(!user){
+            return res.status(401).json({message: "Please Login and continue!"});
+        }
+
+        //isLecturer check
+        if(user.role !== "lecturer"){
+            return res.status(403).json({message: "You're not allowed to do this operation!"});
+        }
+
+        const session = await Session.findOne({_id: req.params.id});
+        if(!session){
+            return res.status(404).json({message: "Session not found!"});
+        }
+
+        console.log(session.lessonName)
+
+        await Session.deleteOne({ _id: req.params.id });
+        res.status(200).json({message: "Session deleted successfully!"});
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).json({
+            message: "Backend Error", 
+            error: error.message    
+        })
+    }
+}
