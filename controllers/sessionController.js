@@ -129,6 +129,7 @@ export const markAttendance = async (req, res) => {
     }
 };
 
+
 export const sessionList = async (req,res)=>{
     try {
         const user = req.user;

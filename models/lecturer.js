@@ -24,3 +24,9 @@ const lecturerSchema = mongoose.Schema({
 
 const Lecturer = mongoose.model("Lecturer", lecturerSchema);
 export default Lecturer;
+
+/**
+ * lalitha@gmail.com
+ * nawodi@gmail.com
+ * 
+ */

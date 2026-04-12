@@ -34,3 +34,16 @@ const studentSchema = new mongoose.Schema({
 
 const Student = mongoose.model("Student", studentSchema);
 export default Student
+
+
+/*
+robert@yahoo.com
+Donald@yahoo.com
+sirisena@yahoo.com
+123
+
+
+
+
+
+*/
