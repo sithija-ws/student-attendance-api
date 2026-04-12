@@ -128,3 +128,30 @@ export const markAttendance = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 };
+
+export const sessionList = async (req,res)=>{
+    try {
+        const user = req.user;
+        
+        //isLogin check
+        if(!user){
+            return res.status(401).json({message: "Please Login and continue!"});
+        }
+
+        //isLecturer check
+        if(user.role !== "lecturer"){
+            return res.status(403).json({message: "You're not allowed to do this operation!"});
+        }
+
+        const sessions = await Session.find({lecturer: user.id});
+        res.status(200).json(sessions);
+
+
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Backend Error", 
+            error: error.message    
+        })
+    }
+}
