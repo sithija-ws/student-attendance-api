@@ -43,10 +43,10 @@ export const studentRegister = async (req, res) => {
 
 export const studentRegisterFromCSV = async (req,res)=>{
     try {
-        const {email, studentID, name } = req.body;
+        const {email, studentID, name, institute } = req.body;
 
         //Basic validation
-        if (!name || !studentID || !email) {
+        if (!name || !studentID || !email || !institute) {
         return res.status(400).json({ message: "All fields required" });
         }
 
@@ -60,7 +60,7 @@ export const studentRegisterFromCSV = async (req,res)=>{
         }
 
         const newStudent = new Student({
-            name, studentID, email
+            name, studentID, email, institute
         })
 
         await newStudent.save();
