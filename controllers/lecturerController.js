@@ -94,12 +94,49 @@ export const generateOTPL = async (req,res)=>{
 
 
 export const changePassword = async (req,res)=>{
-    const {email, newPassword, confirmPassword} = req.body;
+    try {
+        const {email, newPassword, confirmPassword, otp} = req.body;
 
-    //check password confirmation
-    if(newPassword !== confirmPassword){
-        return res.status(400).json({
-            message: "passwords do not match!"
-        })
+        const lecturer = await Lecturer.findOne({email: email});
+        if(!lecturer){
+            return res.status(403).json({
+                message: "User not registered ⛔👤"
+            });
+        }
+
+        //check password confirmation
+        if(newPassword !== confirmPassword){
+            return res.status(400).json({
+                message: "passwords do not match!"
+            })
+        }
+
+        //check otp
+        if(String(lecturer.otp) !== String(otp) || lecturer.otpExpire < Date.now()){
+            return res.status(400).json({
+                message: "Invalid or expired OTP"
+            })
+        }
+
+        //hash pswd
+        const hashedPswd = await bcrypt.hash(newPassword, 10);
+        lecturer.password = hashedPswd;
+
+        //clear otp
+        lecturer.otp = null;
+        lecturer.otpExpire = null;
+
+        await lecturer.save();
+        return res.status(200).json({
+            message: "Password changed successfully ✅"
+        });
+
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({
+            message: "internal server error 🤖"
+        });
     }
+    
 }
