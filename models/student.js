@@ -29,6 +29,10 @@ const studentSchema = new mongoose.Schema({
     otpExpire: {
         type: Date,
         required: false
+    },
+    institute: {
+        type: String,
+        required: true
     }
 })
 
