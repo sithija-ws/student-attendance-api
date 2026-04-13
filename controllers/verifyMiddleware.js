@@ -21,3 +21,11 @@ export const verifyToken = async (req,res, next) => {
         res.status(401).json({message: "Invalid or Expired Token 🔑"});
     }
 }
+
+
+export const checkIsLecturer = (req,res)=>{
+    const user = req.user;
+    if(!user || user.role !== "lecturer"){
+        return res.status(403).json({message: "You're not allowed to do this operation!"});
+    }
+}

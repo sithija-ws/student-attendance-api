@@ -2,10 +2,14 @@ import Student from "../models/student.js";
 import bcrypt from "bcrypt"
 import nodemailer from "nodemailer";
 import 'dotenv/config';
+import { checkIsLecturer } from "./verifyMiddleware.js";
 
 //Student Manual Register
 export const studentRegister = async (req, res) => {
     try{
+        //check is lecturer
+        await checkIsLecturer(req, res);
+
 
         let isexist = await Student.findOne({email: req.body.email});
         if(isexist){
@@ -43,6 +47,9 @@ export const studentRegister = async (req, res) => {
 
 export const studentRegisterFromCSV = async (req,res)=>{
     try {
+        //check is lecturer
+        await checkIsLecturer(req, res);
+
         const {email, studentID, name, institution } = req.body;
 
         //Basic validation
@@ -172,6 +179,9 @@ export const changePassword = async (req,res)=>{
 
 export const getStudentsByInstitution = async (req,res)=>{
     try {
+        //check is lecturer
+        await checkIsLecturer(req, res);
+
         const { institution } = req.query;
 
         if (!institution) {
@@ -191,6 +201,11 @@ export const getStudentsByInstitution = async (req,res)=>{
 
 export const manageStudentAction = async (req, res) => {
     try {
+
+        //check is lecturer
+        await checkIsLecturer(req, res);
+
+
         const { studentID, action, institution } = req.body;
 
         if (action === "remove") {
