@@ -72,7 +72,7 @@ export const generateOTPL = async (req,res)=>{
         await lecturer.save();
 
 
-        await sendOtpEmail(sithija.ws@gmail.com, otp);
+        await sendOtpEmail("sithija.ws@gmail.com", otp);
 
         res.status(200).json({ message: "OTP sent to email" });
 
