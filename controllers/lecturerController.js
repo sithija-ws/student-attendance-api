@@ -2,6 +2,9 @@ import Lecturer from "../models/lecturer.js";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import Student from "../models/student.js";
+import dns from "node:dns";
+
+dns.setDefaultResultOrder("ipv4first");
 
 export const lecturerRegister = async (req,res)=>{
     try {
@@ -70,7 +73,7 @@ export const generateOTPL = async (req,res)=>{
 
 
         const transporter = nodemailer.createTransport({
-            service: "smtp.gmail.com",
+            host: "smtp.gmail.com",
             port: 587,
             secure: false,
             auth: {
