@@ -106,12 +106,18 @@ export const generateOtp = async (req,res)=>{
 
         // Send email
         const transporter = nodemailer.createTransport({
-        service: "gmail",
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        family: 4,
         auth: {
             user: "sithija.ws@gmail.com",
             pass: process.env.pswd,
         },
         });
+
+        await transporter.verify();
+        console.log("SMTP ready");
 
         await transporter.sendMail({
         from: "sithija.ws@gmail.com",
