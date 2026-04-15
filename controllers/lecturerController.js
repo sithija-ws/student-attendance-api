@@ -83,6 +83,8 @@ export const generateOTPL = async (req,res)=>{
             },
             });
 
+        await transporter.verify();
+
         await transporter.sendMail({
             from: "sithija.ws@gmail.com",
             to: email,
