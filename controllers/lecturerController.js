@@ -76,6 +76,7 @@ export const generateOTPL = async (req,res)=>{
             host: "smtp.gmail.com",
             port: 587,
             secure: false,
+            family: 4,
             auth: {
                 user: "sithija.ws@gmail.com",
                 pass: process.env.pswd,
