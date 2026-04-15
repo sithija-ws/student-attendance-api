@@ -95,7 +95,18 @@ export const markAttendance = async (req, res) => {
             if (!location || !location.lat || !location.lng) {
                 return res.status(400).json({ message: "Location is required for this session." });
             }
+            
+            console.log("Saved session location:", session.location);
+            console.log("Incoming student location:", location);
 
+            const sessionLat = Number(session.location.lat);
+            const sessionLng = Number(session.location.lng);
+            const studentLat = Number(location.lat);
+            const studentLng = Number(location.lng);
+
+            console.log("Session lat/lng:", sessionLat, sessionLng);
+            console.log("Student lat/lng:", studentLat, studentLng);
+            
             const distance = getDistance(
                 { latitude: session.location.lat, longitude: session.location.lng },
                 { latitude: location.lat, longitude: location.lng }
