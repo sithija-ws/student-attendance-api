@@ -70,7 +70,9 @@ export const generateOTPL = async (req,res)=>{
 
 
         const transporter = nodemailer.createTransport({
-            service: "gmail",
+            service: "smtp.gmail.com",
+            port: 587,
+            secure: false,
             auth: {
                 user: "sithija.ws@gmail.com",
                 pass: process.env.pswd,

@@ -8,7 +8,9 @@ import lecturerRouter from "./routes/lecturerRouter.js";
 import userLoginRouter from "./routes/userLoginRouter.js";
 import cors from "cors";
 import sessionRouter from "./routes/sessionRouter.js";
+import dns from "node:dns";
 
+dns.setDefaultResultOrder("ipv4first");
 
 
 
