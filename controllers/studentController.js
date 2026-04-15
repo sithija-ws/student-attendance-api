@@ -1,8 +1,9 @@
 import Student from "../models/student.js";
 import bcrypt from "bcrypt"
-import nodemailer from "nodemailer";
 import 'dotenv/config';
 import { checkIsLecturer } from "./verifyMiddleware.js";
+import { sendOtpEmail } from "../utils/sendEmail.js";
+
 
 //Student Manual Register
 export const studentRegister = async (req, res) => {
@@ -105,26 +106,7 @@ export const generateOtp = async (req,res)=>{
         await student.save();
 
         // Send email
-        const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: false,
-        family: 4,
-        auth: {
-            user: "sithija.ws@gmail.com",
-            pass: process.env.pswd,
-        },
-        });
-
-        await transporter.verify();
-        console.log("SMTP ready");
-
-        await transporter.sendMail({
-        from: "sithija.ws@gmail.com",
-        to: email,
-        subject: "OTP for Password Reset",
-        text: `Your OTP is: ${otp}`,
-        });
+         await sendOtpEmail(email, otp);
 
         res.status(200).json({ message: "OTP sent to email" });
 

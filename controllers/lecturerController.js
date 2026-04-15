@@ -1,8 +1,8 @@
 import Lecturer from "../models/lecturer.js";
 import bcrypt from "bcrypt";
-import nodemailer from "nodemailer";
 import Student from "../models/student.js";
 import dns from "node:dns";
+import { sendOtpEmail } from "../utils/sendEmail.js";
 
 dns.setDefaultResultOrder("ipv4first");
 
@@ -72,25 +72,7 @@ export const generateOTPL = async (req,res)=>{
         await lecturer.save();
 
 
-        const transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com",
-            port: 587,
-            secure: false,
-            family: 4,
-            auth: {
-                user: "sithija.ws@gmail.com",
-                pass: process.env.pswd,
-            },
-            });
-
-        await transporter.verify();
-
-        await transporter.sendMail({
-            from: "sithija.ws@gmail.com",
-            to: email,
-            subject: "OTP for Password Reset",
-            text: `Your OTP is ${otp}`
-        });
+        await sendOtpEmail(email, otp);
 
         res.status(200).json({ message: "OTP sent to email" });
 
