@@ -28,12 +28,15 @@ app.use("/api/student", studentRouter);
 app.use("/api/lecturer", lecturerRouter);
 app.use("/api/login", userLoginRouter);
 app.use("/api/sessions", sessionRouter);
+app.get("/", (req, res) => {
+  res.send("Backend is running");
+});
 
 
 
-const port = process.env.port ;
+const PORT = process.env.PORT || 3000 ;
 
 
-app.listen(port, ()=>{
-    console.log("App is running on port 3000 ❤️")
+app.listen(PORT, ()=>{
+    console.log(`App is running on Port ${PORT} ❤️`)
 })
